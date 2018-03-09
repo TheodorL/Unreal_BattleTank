@@ -1,6 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "Runtime/Engine/Public/CollisionQueryParams.h"
+#include "Engine/World.h"
+#include "Tank.h"
+
 
 void ATankPlayerController::BeginPlay()
 {
@@ -29,9 +33,11 @@ void ATankPlayerController::AimToCrosshair()
 {
 	if (!ControlledTank) return;
 	FVector HitLocation; //Out Parameter;
-	if (GetSightRayHitLocation(HitLocation)) return;
-		UE_LOG(LogTemp,Warning,TEXT("HitLocation : %s"),
-			*HitLocation.ToString())
+	if (GetSightRayHitLocation(HitLocation))
+	{
+		GetControlledTank()->AimAt(HitLocation);
+	}
+	
 }
 
 bool ATankPlayerController::GetSightRayHitLocation(FVector &HitLocation) const
@@ -44,6 +50,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector &HitLocation) const
 	if (GetLookDirection(CrosshairLocation, LookDirection))
 	{
 		GetLookDirectionTraceHit(LookDirection, HitLocation);
+		return true;
 	}
 	return false;
 }

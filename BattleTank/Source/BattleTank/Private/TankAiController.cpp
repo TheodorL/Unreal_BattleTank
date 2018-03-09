@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAiController.h"
+#include "Engine/World.h"
+#include "Tank.h"
 
 
 void ATankAiController::BeginPlay()
@@ -27,6 +29,15 @@ void ATankAiController::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT( "AiController found PlayerController possessing: %s"),
 			*PlayerControlledTank->GetName())
+	}
+}
+
+void ATankAiController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (GetPlayerControlledTank())
+	{
+		GetAiControlledTank()->AimAt(GetPlayerControlledTank()->GetActorLocation());
 	}
 }
 
