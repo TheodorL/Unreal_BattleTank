@@ -20,9 +20,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	ATank *GetAiControlledTank()     const;
-	ATank *GetPlayerControlledTank() const;
-	ATank *AiControlledTank     =  nullptr;
-	ATank *PlayerControlledTank =  nullptr;
+	ATank *AiTank     =  nullptr;
+	ATank *PlayerTank =  nullptr;
 	
 };

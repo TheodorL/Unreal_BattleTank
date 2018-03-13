@@ -61,13 +61,22 @@ void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet)
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
 	float BarrelPitch = Barrel->GetForwardVector().Rotation().Pitch;
-	float TurretYaw = Turret->GetForwardVector().Rotation().Yaw;
+	float TurretYaw = Turret->GetForwardVector().Rotation().Yaw + 180;
 	float AimPitch = AimDirection.Rotation().Pitch;
-	float AimYaw = AimDirection.Rotation().Yaw;
+	float AimYaw = AimDirection.Rotation().Yaw + 180;
 	float DeltaPitch = AimPitch - BarrelPitch;
 	float DeltaYaw = AimYaw - TurretYaw;
-	
-	
+	if (DeltaYaw > 180)
+	{
+		DeltaYaw = 360 - DeltaYaw;
+		DeltaYaw = -DeltaYaw;
+	}
+	if (DeltaYaw < -180)
+	{
+		DeltaYaw = -DeltaYaw;
+		DeltaYaw = 360 - DeltaYaw;
+	}
+
 	Barrel->Elevate(DeltaPitch);
 	Turret->YawTurret(DeltaYaw);
 }
