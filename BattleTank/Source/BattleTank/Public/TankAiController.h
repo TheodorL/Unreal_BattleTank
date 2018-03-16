@@ -22,5 +22,7 @@ protected:
 private:
 	ATank *AiTank     =  nullptr;
 	ATank *PlayerTank =  nullptr;
+
+	float AcceptanceRadius = 400.0f;
 	
 };
