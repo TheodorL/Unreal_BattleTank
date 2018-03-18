@@ -3,15 +3,15 @@
 #include "TankPlayerController.h"
 #include "Runtime/Engine/Public/CollisionQueryParams.h"
 #include "Engine/World.h"
-#include "Tank.h"
+#include "TankAimingComponent.h"
 
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	ControlledTank = GetControlledTank();
-	if (!ControlledTank)
-		UE_LOG(LogTemp, Error, TEXT("ControlledTank not found!"))
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if(ensure(AimingComponent))
+	FoundAimingComponent(AimingComponent);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -21,18 +21,13 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimToCrosshair();
 }
 
-ATank *ATankPlayerController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
-
 void ATankPlayerController::AimToCrosshair()
 {
-	if (!ControlledTank) return;
+	if (!ensure(AimingComponent)) return;
 	FVector HitLocation; //Out Parameter;
 	if (GetSightRayHitLocation(HitLocation))
 	{
-		GetControlledTank()->AimAt(HitLocation);
+		AimingComponent->AimAt(HitLocation);
 	}
 	
 }
