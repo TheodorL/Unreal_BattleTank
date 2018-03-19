@@ -20,11 +20,14 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditDefaultsOnly)
+		float AcceptanceRadius = 800000.0f;
+
+
 private:
 	APawn * PlayerTank = nullptr;
 	APawn * AiTank = nullptr;
 	UTankAimingComponent *AimingComponent = nullptr;
 
-	float AcceptanceRadius = 400.0f;
 	
 };

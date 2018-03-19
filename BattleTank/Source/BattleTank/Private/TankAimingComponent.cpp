@@ -26,7 +26,11 @@ void UTankAimingComponent::BeginPlay()
 
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
 {
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	if (RoundsLeft <= 0)
+	{
+		FiringState = EFiringState::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
 	{
 		FiringState = EFiringState::Reloading;
 	}
@@ -72,16 +76,12 @@ void UTankAimingComponent::AimAt(FVector AimLocation)
 		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace))
 	{
-		MoveBarrelTowards(OutLaunchVelocity.GetSafeNormal());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not solve aim!"))
+		MoveTurretAndBarrelTowards(OutLaunchVelocity.GetSafeNormal());
 	}
 }
 
 
-void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+void UTankAimingComponent::MoveTurretAndBarrelTowards(FVector AimDirection)
 {
 	float BarrelPitch = Barrel->GetForwardVector().Rotation().Pitch;
 	float TurretYaw = Turret->GetForwardVector().Rotation().Yaw + 180;
@@ -107,7 +107,7 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 void UTankAimingComponent::Fire()
 {
 	
-	if (FiringState != EFiringState::Reloading)
+	if (FiringState == EFiringState::Aiming || FiringState == EFiringState::Locked)
 	{
 		if (!ensure(Barrel)) return;
 		if (!ensure(ProjectileBlueprint))return;
@@ -119,6 +119,14 @@ void UTankAimingComponent::Fire()
 
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
+		RoundsLeft--;
 	}
 
 }
+
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
+}
+
+

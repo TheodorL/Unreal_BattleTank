@@ -30,7 +30,6 @@ void UTankMovementComponent::RequestDirectMove(const FVector &MoveVelocity, bool
 	FVector AiPathDirection = MoveVelocity.GetSafeNormal();
 	float ForwardRelativeThrottle = FVector::DotProduct(AiCurrentDirection, AiPathDirection);
 	float SidewaysRelativeThrottle = FVector::CrossProduct(AiCurrentDirection, AiPathDirection).Z;
-
 	IntendMoveForward(ForwardRelativeThrottle);
 	IntendMoveSideways(SidewaysRelativeThrottle);
 }

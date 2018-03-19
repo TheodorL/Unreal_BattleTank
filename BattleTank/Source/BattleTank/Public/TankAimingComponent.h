@@ -11,7 +11,8 @@ enum class EFiringState : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 // Forward declaration
@@ -29,20 +30,28 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
+	//used in BP to initialise the barrel and turret pointers
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 		void InitialiseAiming(UTankBarrel*  BarrelToSet, UTankTurret* TurretToSet);
 	
-
+	//calls methods further down dependecy map in order to move turret and barrel
 	void AimAt(FVector AimLocation);
 	
+	//calls projectile method further down dependency map using proper parameter
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 		void Fire();
 
+	//returns the firing state of the current object
+	EFiringState GetFiringState() const;
 
 protected:
 
+	//the default firing state
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringState FiringState = EFiringState::Reloading;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 RoundsLeft = 3;
 
 private:
 
@@ -52,20 +61,23 @@ private:
 	UTankBarrel * Barrel = nullptr;
 	UTankTurret * Turret = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Firing")
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 		float LaunchSpeed = 10000;
-		
-	//Points the barrel towards AimDirection
-	void MoveBarrelTowards(FVector AimDirection);
 
+	//the time between shots
+	UPROPERTY(EditDefaultsOnly)
+		float ReloadTimeInSeconds = 3.0f;
+		
+	//Points the barrel and the turret towards AimDirection
+	void MoveTurretAndBarrelTowards(FVector AimDirection);
+
+	//returns true if the barrel is currently moving
 	bool IsBarrelMoving() const;
 
-
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	//the projectile that is spawned when the Fire() method is called, editable in BP
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		TSubclassOf<AProjectileActor> ProjectileBlueprint;
 
-
-	float ReloadTimeInSeconds = 3.0f;
 	float LastFireTime = 0.0f;
 	FVector OutLaunchVelocity = FVector(0);
 };
