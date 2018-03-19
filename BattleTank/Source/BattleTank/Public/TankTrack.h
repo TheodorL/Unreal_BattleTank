@@ -20,6 +20,8 @@ class BATTLETANK_API UTankTrack : public UStaticMeshComponent
 
 	void ApplySidewaysForce();
 
+	float CurrentThrottle = 0.0f;
+
 	
 	
 public:
@@ -34,6 +36,6 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 		float TrackMaxDrivingForce = 400000.0f;
 
-	float CurrentThrottle = 0.0f;
+
 
 };

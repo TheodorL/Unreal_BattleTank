@@ -9,9 +9,14 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CollisionParameters = FCollisionQueryParams();
+	CollisionParameters.AddIgnoredActor(GetPawn());
+
 	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+
 	if(ensure(AimingComponent))
-	FoundAimingComponent(AimingComponent);
+		FoundAimingComponent(AimingComponent);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -66,8 +71,6 @@ bool ATankPlayerController::GetLookDirectionTraceHit(FVector LookDirection, FVec
 	FHitResult TraceHitResult;
 	FVector StartLocation = PlayerCameraManager->GetCameraLocation();
 	FVector EndLocation = StartLocation + (LookDirection * LineTraceRange);
-	FCollisionQueryParams CollisionParameters;
-	CollisionParameters.AddIgnoredActor(GetPawn());
 	if (GetWorld()->LineTraceSingleByChannel(
 		TraceHitResult, 
 		StartLocation,

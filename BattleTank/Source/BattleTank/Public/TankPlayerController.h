@@ -29,6 +29,8 @@ protected:
 private:
 	UTankAimingComponent *AimingComponent = nullptr;
 
+	FCollisionQueryParams CollisionParameters;
+
 	APawn *ControlledTank =  nullptr;
 	void  AimToCrosshair();
 	bool  GetSightRayHitLocation(FVector &HitLocation) const;
