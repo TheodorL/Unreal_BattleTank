@@ -112,10 +112,9 @@ void UTankAimingComponent::Fire()
 		if (!ensure(Barrel)) return;
 		if (!ensure(ProjectileBlueprint))return;
 		auto Projectile = GetWorld()->SpawnActor<AProjectileActor>(
-			ProjectileBlueprint,
-			Barrel->GetSocketLocation(FName("ProjectileSocket")),
-			Barrel->GetSocketRotation(FName("ProjectileSocket"))
-			);
+										ProjectileBlueprint,
+										Barrel->GetSocketLocation(FName("ProjectileSocket")),
+										Barrel->GetSocketRotation(FName("ProjectileSocket")));
 
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
