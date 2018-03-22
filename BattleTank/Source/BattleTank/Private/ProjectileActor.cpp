@@ -2,16 +2,36 @@
 
 #include "ProjectileActor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Runtime/Engine/Public/TimerManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "PhysicsEngine/RadialForceComponent.h"
 
 
 // Sets default values
 AProjectileActor::AProjectileActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
+	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Collision"));
+	SetRootComponent(CollisionMesh);
+	CollisionMesh->SetNotifyRigidBodyCollision(true);
+	CollisionMesh->SetVisibility(true); //TODO visibility false
+
+	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("LaunchBlast"));
+	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("ImpactBlast"));
+	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	ImpactBlast->bAutoActivate = false;
+
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 	ProjectileMovement->bAutoActivate = false;
+
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>("ExplosionForce");
 
 }
 
@@ -19,14 +39,7 @@ AProjectileActor::AProjectileActor()
 void AProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AProjectileActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	CollisionMesh->OnComponentHit.AddDynamic(this, &AProjectileActor::OnHit);
 }
 
 void AProjectileActor::LaunchProjectile(float Speed) 
@@ -37,5 +50,21 @@ void AProjectileActor::LaunchProjectile(float Speed)
 	
 }
 
+void AProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+	LaunchBlast->Deactivate();
+	ImpactBlast->Activate();
+	ExplosionForce->SetWorldLocation(Hit.ImpactPoint);
+	ExplosionForce->FireImpulse();
+	ExplosionForce->Deactivate();
+	FTimerHandle TimeHandle = FTimerHandle();
+	GetWorldTimerManager().SetTimer(TimeHandle, this, &AProjectileActor::DestroyThis, 1.0f, false, TimeToDestroy);
+}
 
+void AProjectileActor::DestroyThis()
+{
+	this->Destroy();
+}
 

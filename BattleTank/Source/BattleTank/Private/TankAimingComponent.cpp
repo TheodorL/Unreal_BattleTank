@@ -21,7 +21,7 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::BeginPlay()
 {
-	LastFireTime = FPlatformTime::Seconds();
+	LastFireTime = FPlatformTime::Seconds() - ReloadTimeInSeconds;
 }
 
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
@@ -48,7 +48,7 @@ bool UTankAimingComponent::IsBarrelMoving() const
 {
 	if (!ensure(Barrel)) return false;
 	FVector BarrelForward = Barrel->GetForwardVector();
-	return !BarrelForward.Equals(OutLaunchVelocity.GetSafeNormal(), 0.01f);
+	return !BarrelForward.Equals(OutLaunchVelocity.GetSafeNormal(), 0.05f);
 }
 
 

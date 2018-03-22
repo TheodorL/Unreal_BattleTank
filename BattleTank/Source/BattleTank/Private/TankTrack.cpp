@@ -21,7 +21,7 @@ void UTankTrack::ApplySidewaysForce()
 	float DeltaTime = GetWorld()->GetDeltaSeconds();
 	FVector CorrectAcceleration = -SlipSpeed / DeltaTime * GetRightVector();
 	UStaticMeshComponent *TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
-	FVector CorrectForce = (TankRoot->GetMass() * CorrectAcceleration) / 20;
+	FVector CorrectForce = (TankRoot->GetMass() * CorrectAcceleration) / 25;
 	TankRoot->AddForce(CorrectForce);
 }
 
