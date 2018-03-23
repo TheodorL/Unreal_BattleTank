@@ -29,5 +29,8 @@ private:
 	APawn * AiTank = nullptr;
 	UTankAimingComponent *AimingComponent = nullptr;
 
-	
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+		void OnThisTankDeath();
 };

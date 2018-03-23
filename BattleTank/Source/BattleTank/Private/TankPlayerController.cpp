@@ -4,6 +4,7 @@
 #include "Runtime/Engine/Public/CollisionQueryParams.h"
 #include "Engine/World.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 
 void ATankPlayerController::BeginPlay()
@@ -81,6 +82,23 @@ bool ATankPlayerController::GetLookDirectionTraceHit(FVector LookDirection, FVec
 	}
 	HitLocation = FVector(0);
 	return false;
+}
+
+void ATankPlayerController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn)
+	{
+		ATank* PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) return;
+
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnThisTankDeath);
+	}
+}
+
+void ATankPlayerController::OnThisTankDeath()
+{
+	StartSpectatingOnly();
 }
 
 

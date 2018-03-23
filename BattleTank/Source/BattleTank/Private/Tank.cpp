@@ -12,9 +12,31 @@ ATank::ATank()
 
 }
 
+float ATank::GetHealthPercent() const
+{
+	return (float)CurrentHealth/(float)StartingHealth;
+}
+
 void ATank::BeginPlay()
 {
 	Super::BeginPlay(); // call the blueprints begin play after executing code inside the cpp begin play
+	CurrentHealth = StartingHealth;
+}
+
+float ATank::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	int32 DamagePoints = FPlatformMath::RoundToInt(Damage);
+	int32 DamageToApply = FMath::Clamp(DamagePoints, 0, CurrentHealth);
+
+	CurrentHealth -= DamageToApply;
+	if(CurrentHealth <= 0)
+	{
+			OnDeath.Broadcast();
+	}
+
+
+
+	return 0.0f;
 }
 
 

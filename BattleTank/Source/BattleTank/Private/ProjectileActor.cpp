@@ -7,6 +7,7 @@
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "GameFramework/DamageType.h"
 
 
 // Sets default values
@@ -56,9 +57,20 @@ void AProjectileActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	CollisionMesh->DestroyComponent();
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+
 	ExplosionForce->SetWorldLocation(Hit.ImpactPoint);
 	ExplosionForce->FireImpulse();
 	ExplosionForce->Deactivate();
+
+	UGameplayStatics::ApplyRadialDamage(
+		this,
+		ProjectileDamage,
+		GetActorLocation(),
+		ExplosionForce->Radius,
+		UDamageType::StaticClass(),
+		TArray<AActor*>() //damage all actors
+		);
+
 	FTimerHandle TimeHandle = FTimerHandle();
 	GetWorldTimerManager().SetTimer(TimeHandle, this, &AProjectileActor::DestroyThis, 1.0f, false, TimeToDestroy);
 }

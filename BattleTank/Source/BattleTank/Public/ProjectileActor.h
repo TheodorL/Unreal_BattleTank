@@ -51,4 +51,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		float TimeToDestroy = 4.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Component")
+		float ProjectileDamage = 20;
+
 };
