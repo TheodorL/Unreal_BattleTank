@@ -15,15 +15,15 @@ void ATankPlayerController::BeginPlay()
 	CollisionParameters.AddIgnoredActor(GetPawn());
 
 	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	ATank *Tank = Cast<ATank>(GetPawn());
 
 	if(ensure(AimingComponent))
-		FoundAimingComponent(AimingComponent);
+		FoundAimingComponentAndTank(AimingComponent, Tank);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	AimToCrosshair();
 }
 

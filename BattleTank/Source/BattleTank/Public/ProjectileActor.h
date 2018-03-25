@@ -25,6 +25,7 @@ public:
 
 	void LaunchProjectile(float Speed);
 
+	//used as a reference to this->Destroy()
 	UFUNCTION()
 	void DestroyThis();
 
@@ -48,6 +49,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 		URadialForceComponent* ExplosionForce = nullptr;
 
+	//time between accessing the on hit method and actually destroying the projectile
 	UPROPERTY(EditDefaultsOnly)
 		float TimeToDestroy = 4.0f;
 

@@ -10,6 +10,7 @@ void ATankAiController::BeginPlay()
 {
 	Super::BeginPlay();
 	AiTank = GetPawn();
+	ATank::IncreaseAiTankCount();
 }
 
 void ATankAiController::Tick(float DeltaTime)
@@ -49,6 +50,7 @@ void ATankAiController::OnThisTankDeath()
 {
 	if (!GetPawn()) return;
 
+	ATank::DecreaseAiTankCount();
 	GetPawn()->DetachFromControllerPendingDestroy();
 	this->Destroy();
 

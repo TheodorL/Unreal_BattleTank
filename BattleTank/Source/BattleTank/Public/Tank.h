@@ -17,11 +17,23 @@ public:
 	// Sets default values for this pawn's properties
 	ATank();
 
+	//The number of AiControllers currently present in the scene
+	static int32 NoOfAiTanks;
+
+	static void IncreaseAiTankCount();
+	static void DecreaseAiTankCount();
+
+	//Returns NoOfAiTanks
+	UFUNCTION(BlueprintCallable, Category = "Ai")
+		int32 GetAiTankNo() const;
+
 	//return current health as a float between 0 and 1
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealthPercent() const;
 
 	FTankDelegate OnDeath;
+
+	~ATank();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

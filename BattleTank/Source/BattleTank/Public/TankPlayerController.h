@@ -22,8 +22,11 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 
+	//an event that sends a aiming component & tank reference
+	//used in setting up the UI
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
-		void FoundAimingComponent(UTankAimingComponent* AimingCompRef);
+		void FoundAimingComponentAndTank(UTankAimingComponent* AimingCompRef, ATank* TankReference);
+	//TODO improve UI references
 
 
 private:

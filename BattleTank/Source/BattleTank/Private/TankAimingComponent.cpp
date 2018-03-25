@@ -22,6 +22,7 @@ UTankAimingComponent::UTankAimingComponent()
 void UTankAimingComponent::BeginPlay()
 {
 	LastFireTime = FPlatformTime::Seconds() - ReloadTimeInSeconds;
+	bIsGamePaused = false;
 }
 
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
@@ -61,22 +62,25 @@ void UTankAimingComponent::InitialiseAiming(UTankBarrel * BarrelToSet, UTankTurr
 
 void UTankAimingComponent::AimAt(FVector AimLocation)
 {
+	bIsGamePaused = UGameplayStatics::IsGamePaused(GetWorld());
+	if (bIsGamePaused == true) return;
 	if (!ensure(Barrel) || !ensure(Turret)) return;
-	OutLaunchVelocity;
-	FVector StartLocation = Barrel->GetSocketLocation(FName("ProjectileSocket"));
-
-	if (UGameplayStatics::SuggestProjectileVelocity(
-		this, 
-		OutLaunchVelocity, 
-		StartLocation,
-		AimLocation, 
-		LaunchSpeed,
-		false,
-		0,
-		0,
-		ESuggestProjVelocityTraceOption::DoNotTrace))
 	{
-		MoveTurretAndBarrelTowards(OutLaunchVelocity.GetSafeNormal());
+		FVector StartLocation = Barrel->GetSocketLocation(FName("ProjectileSocket"));
+
+		if (UGameplayStatics::SuggestProjectileVelocity(
+			this,
+			OutLaunchVelocity,
+			StartLocation,
+			AimLocation,
+			LaunchSpeed,
+			false,
+			0,
+			0,
+			ESuggestProjVelocityTraceOption::DoNotTrace))
+		{
+			MoveTurretAndBarrelTowards(OutLaunchVelocity.GetSafeNormal());
+		}
 	}
 }
 

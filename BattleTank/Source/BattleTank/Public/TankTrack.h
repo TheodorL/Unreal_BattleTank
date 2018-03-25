@@ -28,9 +28,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetThrottle(float Throttle);
 
+	//used to add fake friction
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
+	//adds a force vector to the current track
 	void DriveTrack();
 
 	UPROPERTY(EditDefaultsOnly)

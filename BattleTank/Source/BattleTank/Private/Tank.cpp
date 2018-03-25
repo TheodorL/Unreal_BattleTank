@@ -12,6 +12,8 @@ ATank::ATank()
 
 }
 
+int32 ATank::NoOfAiTanks = 0;
+
 float ATank::GetHealthPercent() const
 {
 	return (float)CurrentHealth/(float)StartingHealth;
@@ -31,7 +33,7 @@ float ATank::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AControl
 	CurrentHealth -= DamageToApply;
 	if(CurrentHealth <= 0)
 	{
-			OnDeath.Broadcast();
+		OnDeath.Broadcast();
 	}
 
 
@@ -39,6 +41,25 @@ float ATank::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AControl
 	return 0.0f;
 }
 
+void ATank::IncreaseAiTankCount()
+{
+	NoOfAiTanks++;
+}
+
+void ATank::DecreaseAiTankCount()
+{
+	NoOfAiTanks--;
+}
+
+int32 ATank::GetAiTankNo() const
+{
+	return NoOfAiTanks;
+}
+
+ATank::~ATank()
+{
+	NoOfAiTanks = 0;
+}
 
 
 

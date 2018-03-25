@@ -33,4 +33,5 @@ private:
 
 	UFUNCTION()
 		void OnThisTankDeath();
+
 };
